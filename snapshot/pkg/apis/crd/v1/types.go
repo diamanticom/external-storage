@@ -44,6 +44,15 @@ type VolumeSnapshotStatus struct {
 // VolumeSnapshotConditionType is the type of VolumeSnapshot conditions
 type VolumeSnapshotConditionType string
 
+// DiamantiVolumeSnapshotSource is Diamanti volume snapshot source
+type DiamantiVolumeSnapshotSource struct {
+	Name       string `json:"name"`
+	UUID       string `json:"uuid"`
+	FSType     string `json:"fsType"`
+	ParentName string `json:"parentName"`
+	ParentUUID string `json:"parentUUID"`
+}
+
 // These are valid conditions of a volume snapshot.
 const (
 	// VolumeSnapshotConditionPending means the snapshot is cut and the application
@@ -255,6 +264,9 @@ type VolumeSnapshotDataSource struct {
 	// CinderVolumeSnapshotSource represents Cinder snapshot resource
 	// +optional
 	CinderSnapshot *CinderVolumeSnapshotSource `json:"cinderVolume,omitempty"`
+	// DiamantiVolumeSnapshot represents Diamanti snapshot resource
+	// +optional
+	DiamantiVolumeSnapshot *DiamantiVolumeSnapshotSource `json:"diamantiVolumeSnapshot,omitempty`
 }
 
 // GetSupportedVolumeFromPVSpec gets supported volume from PV spec
@@ -293,6 +305,9 @@ func GetSupportedVolumeFromSnapshotDataSpec(spec *VolumeSnapshotDataSpec) string
 	}
 	if spec.GlusterSnapshotVolume != nil {
 		return "glusterfs"
+	}
+	if spec.DiamantiVolumeSnapshot != nil {
+		return "diamanti.com/volume"
 	}
 	return ""
 }
